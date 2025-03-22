@@ -1,5 +1,5 @@
-import { SideBarButton } from "./sideBarButton";
-import { SideBarTab } from "./sideBarTab";
+import { SideBarButton } from "./SideBarButton";
+import { SideBarTab } from "./SideBarTab";
 import { ChevronDown, ArrowLeftToLine, Book, FileClock } from "lucide-react";
 
 const tabs = [
