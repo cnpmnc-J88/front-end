@@ -1,4 +1,6 @@
+"use client";
 import EvaluationPage, { EvaluationItem } from "@/components/EvaluationCard";
+import { useEffect, useState } from "react";
 const mockEvaluations: EvaluationItem[] = [
   {
     id: 1,
@@ -25,10 +27,33 @@ const mockEvaluations: EvaluationItem[] = [
   },
 ];
 
-export default function Evaluation() {
+export default async function Evaluation() {
+  const [evaluations, setEvaluations] =
+    useState<EvaluationItem[]>(mockEvaluations);
+  useEffect(() => {
+    const callApi = async () => {
+      const page = 0;
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND_URL + `/form?page=${page}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch");
+      }
+
+      const data = await response.json();
+      setEvaluations(data);
+      console.log(data);
+    };
+
+    callApi();
+  }, []);
   return (
     <div>
-      <EvaluationPage items={mockEvaluations} />
+      <EvaluationPage items={evaluations} />
     </div>
   );
 }
