@@ -9,8 +9,6 @@ export const SideBarTab: React.FC<{
         isSelected ? "border-l-6 border-purple-500" : ""
       }  `}
     >
-      {/* <div className="w-2 h-full bg-purple-500 stroke-amber-600"></div> */}
-      {/* <div className="flex flex-1 justify-center items-center p-4 gap-2"> */}
       <div
         className={`w-full flex items-center justify-left py-2  ${
           isSelected ? "px-12" : "px-14"
@@ -19,7 +17,6 @@ export const SideBarTab: React.FC<{
         {icon}
         <span className="text-base font-medium ">{tabName}</span>
       </div>
-      {/* </div> */}
     </div>
   );
 };

@@ -28,6 +28,7 @@ export function SideBar() {
       <div className="h-fit flex flex-col gap-3">
         {tabs.map((item, index) => (
           <SideBarTab
+            key={index}
             icon={item.icon}
             tabName={item.tabName}
             isSelected={item.isSelected}
