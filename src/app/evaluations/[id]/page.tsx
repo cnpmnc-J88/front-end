@@ -54,7 +54,7 @@ export default async function EvaluationDetailPage({
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <Button asChild variant="link" className="px-0">
-            <Link href="/">
+            <Link href="/evaluations">
               <ArrowLeft className="mr-1" /> Quay lại danh sách
             </Link>
           </Button>
