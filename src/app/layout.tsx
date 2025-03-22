@@ -30,7 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-row`}
       >
         <SideBar />
-        <div className="flex-1">
+        <div className="flex-1 h-screen overflow-auto">
           <Header />
           {children}
         </div>
