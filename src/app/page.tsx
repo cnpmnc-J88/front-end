@@ -1,7 +1,7 @@
-import EvaluationPage from "@/components/evaluationCard";
+import EvaluationPage, { EvaluationItem } from "@/components/EvaluationCard";
 
 export default function Home() {
-  const mockEvaluations = [
+  const mockEvaluations: EvaluationItem[] = [
     {
       id: 1,
       employeeName: "Nguyễn Văn A",

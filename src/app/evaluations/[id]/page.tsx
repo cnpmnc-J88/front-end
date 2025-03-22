@@ -1,4 +1,4 @@
-import { EvaluationItem } from "@/components/evaluationCard";
+import { EvaluationItem } from "@/components/EvaluationCard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { notFound } from "next/navigation";
