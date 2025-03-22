@@ -7,7 +7,7 @@ import {
 
 export function Header() {
   return (
-    <header className="w-full h-14  flex flex-row items-center">
+    <header className="w-full h-14  flex flex-row items-center sticky">
       <div className="flex flex-1 justify-end px-9 gap-2">
         <img src="favicon.ico" className="w-9" />
 
