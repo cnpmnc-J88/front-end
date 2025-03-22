@@ -11,6 +11,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export interface EvaluationItem {
   id: number;
@@ -119,8 +120,8 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
       </CardContent>
 
       <CardFooter className="flex justify-end gap-2">
-        <Button variant="outline" size="sm">
-          Xem chi tiết
+        <Button asChild variant="outline" size="sm">
+          <Link href={`/evaluations/${item.id}`}>Xem chi tiết</Link>
         </Button>
         <Button size="sm">Lưu đánh giá</Button>
       </CardFooter>
