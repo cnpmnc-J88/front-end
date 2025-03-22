@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 interface AnswerFormProps {
   assessment: AssessmentForm;
   // We'll use a serverAction URL string or form action instead of a function
-  formAction: (formData: FormData) => Promise<void>;
+  formAction: (formData: FormData) => Promise<any>;
 }
 
 export default function PerformanceAssessmentForm({

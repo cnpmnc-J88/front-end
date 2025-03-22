@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,8 +37,8 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
           index < Math.floor(rating)
             ? "text-yellow-400 fill-current"
             : index < rating
-            ? "text-yellow-400 fill-current"
-            : "text-gray-300 fill-current"
+              ? "text-yellow-400 fill-current"
+              : "text-gray-300 fill-current"
         }`}
         viewBox="0 0 20 20"
       >
@@ -74,9 +67,7 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
 
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>Ngày đánh giá:</span>
-              <time dateTime={item.evaluationDate}>
-                {new Date(item.evaluationDate).toLocaleDateString("vi-VN")}
-              </time>
+              <time dateTime={item.evaluationDate}>{new Date(item.evaluationDate).toLocaleDateString("vi-VN")}</time>
             </div>
           </div>
 
@@ -93,9 +84,7 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
           <span className="font-medium">Đánh giá:</span>
           <div className="flex items-center gap-1">
             {renderStars(item.rating)}
-            <span className="ml-2 text-sm text-muted-foreground">
-              ({item.rating}/5)
-            </span>
+            <span className="ml-2 text-sm text-muted-foreground">({item.rating}/5)</span>
           </div>
         </div>
 
@@ -103,11 +92,7 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
           <h4 className="font-medium mb-2">Tiêu chí chính:</h4>
           <div className="flex flex-wrap gap-2">
             {item.criteria.map((criterion, index) => (
-              <Badge
-                key={index}
-                variant="outline"
-                className="text-sm px-3 py-1 rounded-full"
-              >
+              <Badge key={index} variant="outline" className="text-sm px-3 py-1 rounded-full">
                 {criterion}
               </Badge>
             ))}
@@ -115,7 +100,7 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
         </div>
 
         <blockquote className="pl-4 border-l-4 border-gray-200 italic text-muted-foreground">
-          "{item.comment}"
+          &ldquo;{item.comment}&ldquo;
         </blockquote>
       </CardContent>
 
