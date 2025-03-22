@@ -136,7 +136,6 @@ interface EvaluationPageProps {
 export default function EvaluationPage({ items }: EvaluationPageProps) {
   return (
     <main className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8">Đánh Giá Nhân Viên</h1>
       <div className="space-y-6 max-w-4xl mx-auto">
         {items.map((item) => (
           <EvaluationCard key={item.id} item={item} />

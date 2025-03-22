@@ -1,10 +1,14 @@
+import Link from "next/link";
+
 export const SideBarTab: React.FC<{
   tabName: string;
   icon: any;
   isSelected?: boolean;
-}> = ({ tabName, icon, isSelected = false }) => {
+  path: string;
+}> = ({ tabName, icon, isSelected = false, path }) => {
   return (
-    <div
+    <Link
+      href={path}
       className={`w-full flex items-center justify-center  ${
         isSelected
           ? "border-l-6 border-purple-400 text-purple-400"
@@ -19,6 +23,6 @@ export const SideBarTab: React.FC<{
           <span className="text-base font-medium ">{tabName}</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
