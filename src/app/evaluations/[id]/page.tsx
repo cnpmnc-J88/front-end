@@ -41,9 +41,10 @@ const getEvaluationDetail = (id: string): EvaluationItem | undefined => {
 export default async function EvaluationDetailPage({
   params,
 }: {
-  params: Params;
+  params: Promise<Params>;
 }) {
-  const evaluation = await getEvaluationDetail(params.id);
+  const { id } = await params;
+  const evaluation = await getEvaluationDetail(id);
 
   if (!evaluation) {
     return notFound();
