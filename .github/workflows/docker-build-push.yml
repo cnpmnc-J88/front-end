@@ -1,12 +1,16 @@
 name: Build and Push Docker Image
 
+# Disable the workflow by commenting out all triggers
+# on:
+#   push:
+#     branches: ["*"]
+#   pull_request:
+#     branches: [main, master]
+#   workflow_dispatch:
+
+# Alternative: Set the workflow to only run manually
 on:
-  push:
-    # branches: [main, master]
-    branches: ["*"]
-  pull_request:
-    branches: [main, master]
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch: # Only manual triggers allowed
 
 jobs:
   build-and-push:
