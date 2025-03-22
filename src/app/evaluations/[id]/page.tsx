@@ -1,4 +1,3 @@
-// app/evaluations/[id]/page.tsx
 import { EvaluationItem } from "@/components/evaluationCard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -39,8 +38,12 @@ const getEvaluationDetail = (id: string): EvaluationItem | undefined => {
   return mockEvaluations.find((item) => item.id === Number(id));
 };
 
-export default function EvaluationDetailPage({ params }: { params: Params }) {
-  const evaluation = getEvaluationDetail(params.id);
+export default async function EvaluationDetailPage({
+  params,
+}: {
+  params: Params;
+}) {
+  const evaluation = await getEvaluationDetail(params.id);
 
   if (!evaluation) {
     return notFound();

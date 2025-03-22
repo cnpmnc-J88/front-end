@@ -123,7 +123,7 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
         <Button asChild variant="outline" size="sm">
           <Link href={`/evaluations/${item.id}`}>Xem chi tiết</Link>
         </Button>
-        <Button size="sm">Lưu đánh giá</Button>
+        {/* <Button size="sm">Lưu đánh giá</Button> */}
       </CardFooter>
     </Card>
   );
