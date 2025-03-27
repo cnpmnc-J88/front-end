@@ -10,8 +10,8 @@ export function SideBar() {
     {
       tabName: "Add form",
       icon: <Book />,
-      path: "/add-form",
-      isSelected: pathname === "/add-form",
+      path: "/form/performanceAssessment",
+      isSelected: pathname === "/form/performanceAssessment",
     },
     {
       tabName: "History",
