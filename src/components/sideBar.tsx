@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import { SideBarButton } from "./SideBarButton";
 import { SideBarTab } from "./SideBarTab";
-import { ArrowLeftToLine, Book, FileClock } from "lucide-react";
+import { ArrowLeftToLine, Book, FileClock, Mails } from "lucide-react";
 
 export function SideBar() {
   const pathname = usePathname();
@@ -18,6 +18,12 @@ export function SideBar() {
       icon: <FileClock />,
       path: "/evaluations",
       isSelected: pathname === "/evaluations",
+    },
+    {
+      tabName: "Send Email",
+      icon: <Mails />,
+      path: "/evaluations/send-bulk",
+      isSelected: pathname === "/evaluations/send-bulk",
     },
   ];
   return (
