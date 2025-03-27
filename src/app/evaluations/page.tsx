@@ -27,7 +27,7 @@ const mockEvaluations: EvaluationItem[] = [
   },
 ];
 
-export default async function Evaluation() {
+export default function Evaluation() {
   const [evaluations, setEvaluations] =
     useState<EvaluationItem[]>(mockEvaluations);
   useEffect(() => {
