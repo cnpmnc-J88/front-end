@@ -11,6 +11,8 @@ export default function ReceivePage() {
     const accessToken = params.get("access_token");
     const refreshToken = params.get("refresh_token");
 
+    tokenService.setTokens(accessToken || "", refreshToken || "");
+
     if (accessToken && refreshToken) {
       // Send tokens to the backend to set HttpOnly cookies
       tokenService.setTokens(accessToken, refreshToken);
