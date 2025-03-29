@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, use } from "react";
-"use client";
-
 import { EvaluationItem } from "@/components/EvaluationCard";
 import { Button } from "@/components/ui/button";
+import { AssessmentForm } from "@/components/AssessmentForm";
 import { AssessmentForm } from "@/components/AssessmentForm";
 import Link from "next/link";
 import { notFound, useSearchParams } from "next/navigation";
@@ -133,7 +132,24 @@ export default function EvaluationDetailPage() {
                   (Biểu đồ đánh giá)
                 </div>
               </div>
-            </div> */}
+            </div>
+
+            {/* Assessment Form Section */}
+            {showAssessmentForm ? (
+              <div className="mt-8 border-t pt-4">
+                <AssessmentForm
+                  employeeId={evaluation.id}
+                  onCancel={() => setShowAssessmentForm(false)}
+                  onSuccess={handleAssessmentSuccess}
+                />
+              </div>
+            ) : (
+              <div className="mt-6 flex justify-end">
+                <Button onClick={() => setShowAssessmentForm(true)}>
+                  Đánh giá nhân viên
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
