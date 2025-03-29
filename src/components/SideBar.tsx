@@ -9,6 +9,7 @@ import {
   Book,
   FileClock,
   Gauge,
+  Mails,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -55,6 +56,12 @@ export function SideBar() {
       icon: <FileClock />,
       path: "/evaluations",
       isSelected: pathname?.startsWith("/evaluations"),
+    },
+    {
+      tabName: "Send Email",
+      icon: <Mails />,
+      path: "/evaluations/send-bulk",
+      isSelected: pathname === "/evaluations/send-bulk",
     },
   ];
 

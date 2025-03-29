@@ -21,14 +21,12 @@ export async function POST(req: Request) {
   response.cookies.set("access_token", accessToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
     path: "/",
   });
 
   response.cookies.set("refresh_token", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
     path: "/",
   });
 

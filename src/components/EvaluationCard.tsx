@@ -89,7 +89,7 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <span className="font-medium">Đánh giá:</span>
           <div className="flex items-center gap-1">
             {renderStars(item.rating)}
@@ -97,7 +97,7 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
               ({item.rating}/5)
             </span>
           </div>
-        </div>
+        </div> */}
 
         <div>
           <h4 className="font-medium mb-2">Tiêu chí chính:</h4>
@@ -114,9 +114,9 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
           </div>
         </div>
 
-        <blockquote className="pl-4 border-l-4 border-gray-200 italic text-muted-foreground">
+        {/* <blockquote className="pl-4 border-l-4 border-gray-200 italic text-muted-foreground">
           &ldquo;{item.comment}&ldquo;
-        </blockquote>
+        </blockquote> */}
       </CardContent>
 
       <CardFooter className="flex justify-end gap-2">
