@@ -13,23 +13,35 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { PlusCircle, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formApi, labelApi } from "@/services/api";
 
-
+// Update the form schema to match the API requirements
 const formSchema = z.object({
-  id: z.string().min(1, { message: "Form ID is required." }),
-  criterias: z.array(
-    z.string().min(1, { message: "Criteria cannot be empty." })
-  ).min(1, { message: "At least one criteria is required." })
+  form_name: z.string().min(1, { message: "Form name is required." }),
+  form_description: z
+    .string()
+    .min(1, { message: "Form description is required." }),
+  criterias: z
+    .array(z.string().min(1, { message: "Criteria cannot be empty." }))
+    .min(1, { message: "At least one criteria is required." }),
 });
 
 export default function PerformanceCriteriaForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    success?: boolean;
+    message?: string;
+  }>({});
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      id: `form-${Date.now()}`, // Generate a default ID
-      criterias: [""]
+      form_name: "",
+      form_description: "",
+      criterias: [""],
     },
   });
 
@@ -39,18 +51,62 @@ export default function PerformanceCriteriaForm() {
     name: "criterias",
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Create the AssessmentForm object
-    const assessmentForm: AssessmentForm = {
-      id: values.id,
-      criterias: values.criterias
-    };
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true);
+    setSubmitStatus({});
 
-    // Do something with the form values
-    console.log("Assessment Form Created:", assessmentForm);
+    try {
+      // First, create the form
+      const formResponse = await formApi.createForm({
+        form_name: values.form_name,
+        form_description: values.form_description,
+      });
 
-    // Here you would typically send the form to your backend
-    // For example: saveAssessmentForm(assessmentForm);
+      if (!formResponse.success || !formResponse.data) {
+        setSubmitStatus({
+          success: false,
+          message: formResponse.error || "Failed to create form",
+        });
+        return;
+      }
+
+      const formId = formResponse.data.id;
+
+      // Then add each criterion as a label
+      const labelPromises = values.criterias.map((criteria) =>
+        labelApi.createLabel(formId, { label_name: criteria })
+      );
+
+      // Wait for all labels to be added
+      const labelResults = await Promise.all(labelPromises);
+
+      // Check if any label failed to create
+      const failedLabels = labelResults.filter((result) => !result.success);
+
+      if (failedLabels.length > 0) {
+        setSubmitStatus({
+          success: true,
+          message: "Form created but some criteria could not be added.",
+        });
+      } else {
+        setSubmitStatus({
+          success: true,
+          message: "Form and all criteria created successfully!",
+        });
+        form.reset({
+          form_name: "",
+          form_description: "",
+          criterias: [""],
+        });
+      }
+    } catch (error) {
+      setSubmitStatus({
+        success: false,
+        message: "An error occurred while submitting the form.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -59,17 +115,50 @@ export default function PerformanceCriteriaForm() {
         <CardTitle>Create Assessment Form</CardTitle>
       </CardHeader>
       <CardContent>
+        {submitStatus.message && (
+          <div
+            className={`p-4 mb-4 rounded-md ${
+              submitStatus.success
+                ? "bg-green-50 text-green-800"
+                : "bg-red-50 text-red-800"
+            }`}
+          >
+            {submitStatus.message}
+          </div>
+        )}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {/* Form ID Field */}
+            {/* Form Name Field */}
             <FormField
               control={form.control}
-              name="id"
+              name="form_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Form ID</FormLabel>
+                  <FormLabel>Form Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter a unique form ID..." {...field} />
+                    <Input
+                      placeholder="Enter a name for this assessment form..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Form Description Field */}
+            <FormField
+              control={form.control}
+              name="form_description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Provide a description of this assessment form..."
+                      className="min-h-24"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,8 +190,9 @@ export default function PerformanceCriteriaForm() {
                       <FormItem className="flex-1">
                         <FormLabel>{`Criteria ${index + 1}`}</FormLabel>
                         <FormControl>
-                          <Input
+                          <Textarea
                             placeholder="Enter assessment criteria..."
+                            className="min-h-20"
                             {...field}
                           />
                         </FormControl>
@@ -110,7 +200,7 @@ export default function PerformanceCriteriaForm() {
                       </FormItem>
                     )}
                   />
-                  {fields.length > 1 && (
+                  {fields.length >= 1 && (
                     <Button
                       type="button"
                       variant="ghost"
@@ -125,7 +215,9 @@ export default function PerformanceCriteriaForm() {
               ))}
             </div>
 
-            <Button type="submit">Create Assessment Form</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Creating..." : "Create Assessment Form"}
+            </Button>
           </form>
         </Form>
       </CardContent>

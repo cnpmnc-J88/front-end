@@ -1,3 +1,4 @@
+import { tokenService } from "@/services/auth";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -40,6 +41,8 @@ export async function POST(req: Request) {
     secure: true,
     path: "/",
   });
+
+  tokenService.setTokens(accessToken, refreshToken);
 
   return response;
 }
