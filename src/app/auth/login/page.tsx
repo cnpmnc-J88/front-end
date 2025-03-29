@@ -5,7 +5,7 @@ import { MdAssessment } from "react-icons/md";
 
 export default function LoginPage() {
   const router = useRouter();
-  const backendUrl = "http://localhost:8080";
+  const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
   const handleGoogleLogin = () => {
     window.location.href = `${backendUrl}/auth/login`;

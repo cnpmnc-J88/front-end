@@ -11,6 +11,19 @@ export async function POST(req: Request) {
   const body = await req.json();
   const { accessToken, refreshToken } = body;
 
+  try {
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/register_email?access_token=${accessToken}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + accessToken,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (exception) {}
+
   if (!accessToken || !refreshToken) {
     return NextResponse.json({ error: "Missing tokens" }, { status: 400 });
   }
@@ -19,13 +32,11 @@ export async function POST(req: Request) {
 
   // Set HttpOnly cookies using the cookies API
   response.cookies.set("access_token", accessToken, {
-    httpOnly: true,
     secure: true,
     path: "/",
   });
 
   response.cookies.set("refresh_token", refreshToken, {
-    httpOnly: true,
     secure: true,
     path: "/",
   });
