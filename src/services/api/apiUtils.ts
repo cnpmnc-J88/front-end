@@ -46,18 +46,25 @@ export async function apiRequest<T>(
 
     // Make the request
     const response = await fetch(url.toString(), options);
-    const data = await response.json();
 
+    let data;
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      data = await response.text();
+    }
+    
     if (!response.ok) {
-      return {
-        success: false,
-        error: data.message || `Error: ${response.status}`
-      };
+    return {
+      success: true,
+      data
+    };
     }
 
     return {
       success: true,
-      data
+      // data
     };
   } catch (error) {
     console.error('API request failed:', error);
