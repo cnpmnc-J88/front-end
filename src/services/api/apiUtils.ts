@@ -1,10 +1,10 @@
 import { ApiResponse } from './types';
 import { tokenService } from '../auth/tokenService';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api`;
 
 /**
- * Generic API request handler with error handling
+ * Generic API request handler with error handling and CORS configuration
  */
 export async function apiRequest<T>(
   endpoint: string,
@@ -21,12 +21,14 @@ export async function apiRequest<T>(
       });
     }
 
-    // Configure request options
+    // Configure request options with CORS settings
     const options: RequestInit = {
       method,
       headers: {
         'Content-Type': 'application/json',
       },
+      mode: 'cors', // Enable CORS
+      credentials: 'include', // Include credentials like cookies if needed
     };
 
     // Add authorization token if available

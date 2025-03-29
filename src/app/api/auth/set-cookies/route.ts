@@ -42,7 +42,5 @@ export async function POST(req: Request) {
     path: "/",
   });
 
-  tokenService.setTokens(accessToken, refreshToken);
-
   return response;
 }
