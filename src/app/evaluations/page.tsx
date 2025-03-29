@@ -4,15 +4,11 @@ import { useEffect, useState } from "react";
 
 interface FormItem {
   id: number;
-  user: {
-    displayName: string;
-  };
+  email: string;
   form: {
     id: number;
   };
   createdAt: string;
-  status: string;
-  comment: string;
 }
 
 interface FormItemList {
@@ -52,7 +48,7 @@ export default function Evaluation() {
     const fetchAssessment = async (
       accessToken: string,
       formId: number
-    ): Promise<AssessmentInterface> => {
+    ): Promise<AssessmentInterface[]> => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/getassessment/${formId}`,
         {
@@ -85,14 +81,14 @@ export default function Evaluation() {
         const evaluationsWithAssessments: EvaluationItem[] = await Promise.all(
           forms.content.map(async (form) => {
             const assessment = await fetchAssessment(accessToken, form.form.id);
-            return {
+            const response = {
               id: form.id,
-              employeeName: form.user.displayName,
+              employeeName: form.email,
               evaluationDate: form.createdAt,
-              criteria: assessment.labelNames,
-              status: form.status,
-              comment: form.comment,
+              criteria: assessment[0].labelNames,
             };
+
+            return response;
           })
         );
 
