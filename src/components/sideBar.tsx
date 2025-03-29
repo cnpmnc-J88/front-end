@@ -19,12 +19,6 @@ export function SideBar() {
       path: "/evaluations",
       isSelected: pathname === "/evaluations",
     },
-    {
-      tabName: "Send Email",
-      icon: <Mails />,
-      path: "/evaluations/send-bulk",
-      isSelected: pathname === "/evaluations/send-bulk",
-    },
   ];
   return (
     <div className="w-1/6 min-h-screen bg-black flex flex-col gap-2 py-6 z-10">
