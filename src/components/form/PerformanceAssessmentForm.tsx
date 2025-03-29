@@ -5,11 +5,11 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle
+  CardTitle,
+  CardDescription
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-
 
 interface AnswerFormProps {
   assessment: AssessmentForm;
@@ -149,6 +149,9 @@ export default function PerformanceAssessmentForm({
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Performance Assessment</CardTitle>
+        <CardDescription className="mt-1">
+          Using the {assessment.id.split('-').pop()?.charAt(0).toUpperCase() + assessment.id.split('-').pop()?.slice(1)} template
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form
