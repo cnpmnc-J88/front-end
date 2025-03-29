@@ -43,7 +43,7 @@ export default function LoginPage() {
         </button>
 
         <div className="mt-6 text-center text-sm text-gray-500">
-          <p>© 2023 J88 - Employee Assessment System</p>
+          <p>© 2025 J88 - Employee Assessment System</p>
         </div>
       </div>
     </div>

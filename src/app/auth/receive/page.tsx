@@ -15,10 +15,8 @@ export default function ReceivePage() {
     tokenService.setTokens(accessToken || "", refreshToken || "");
 
     if (accessToken && refreshToken) {
-      localStorage.setItem("access_token", accessToken);
-      localStorage.setItem("refresh_token", refreshToken);
       // Send tokens to the backend to set HttpOnly cookies
-
+      tokenService.setTokens(accessToken, refreshToken);
       fetch("/api/auth/set-cookies", {
         method: "POST",
         headers: {
