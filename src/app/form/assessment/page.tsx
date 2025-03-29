@@ -4,21 +4,24 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { submitAnswers } from "@/actions/assessment/actions";
 import TemplateSelector from "@/components/form/TemplateSelector";
 import PerformanceAssessmentForm from "@/components/form/PerformanceAssessmentForm";
-import { Button } from "@/components/ui/button"; // Import the custom Button component
+import { Button } from "@/components/ui/button";
+import { formApi, labelApi } from "@/services/api";
+import { FormResponse, LabelResponse } from "@/services/api";
 
-
-// Define serializable template type
-interface TemplateItem {
-  id: string;
-  formName: string;
-  criterias: Array<{
-    id: string;
-    label_name: string;
-  }>;
+// Helper function for transforming API responses
+function apiFormToAssessmentForm(form: FormResponse, labels: LabelResponse[]): AssessmentForm {
+  return {
+    id: form.id.toString(),
+    formName: form.name,
+    criterias: labels.map(label => ({
+      id: label.id.toString(),
+      label_name: label.name
+    }))
+  };
 }
 
-// Example Templates
-const templates: TemplateItem[] = [
+// Fallback templates to use if API fails
+const fallbackTemplates: AssessmentForm[] = [
   {
     id: "standard",
     formName: "Standard Assessment",
@@ -29,55 +32,68 @@ const templates: TemplateItem[] = [
       { id: "problem_solving", label_name: "Problem Solving & Innovation" },
       { id: "leadership", label_name: "Leadership & Initiative" }
     ]
-  },
-  {
-    id: "management",
-    formName: "Management Assessment",
-    criterias: [
-      { id: "team_leadership", label_name: "Team Leadership" },
-      { id: "strategic_planning", label_name: "Strategic Planning" },
-      { id: "resource_management", label_name: "Resource Management" },
-      { id: "performance_management", label_name: "Performance Management" },
-      { id: "decision_making", label_name: "Decision Making" },
-      { id: "communication_influence", label_name: "Communication & Influence" }
-    ]
-  },
-  {
-    id: "technical",
-    formName: "Technical Assessment",
-    criterias: [
-      { id: "technical_expertise", label_name: "Technical Expertise" },
-      { id: "code_quality", label_name: "Code Quality" },
-      { id: "problem_solving", label_name: "Problem Solving" },
-      { id: "technical_documentation", label_name: "Technical Documentation" },
-      { id: "innovation_learning", label_name: "Innovation & Learning" },
-      { id: "technical_collaboration", label_name: "Technical Collaboration" }
-    ]
   }
 ];
+
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const template = searchParams.get('template'); // Access the query parameter
-  const [selectedTemplate, setSelectedTemplate] = useState<TemplateItem | null>(null);
+  const templateId = searchParams.get('template');
+  const [selectedTemplate, setSelectedTemplate] = useState<AssessmentForm | null>(null);
+  const [templates, setTemplates] = useState<AssessmentForm[]>(fallbackTemplates);
+  const [isLoading, setIsLoading] = useState(true);
+  const [usingFallback, setUsingFallback] = useState(false);
+
+  // Fetch all available forms/templates
+  useEffect(() => {
+    const fetchForms = async () => {
+      setIsLoading(true);
+      try {
+        const response = await formApi.getAllForms();
+        if (response.success && response.data && response.data.length > 0) {
+          // Transform API data
+          const mappedTemplates = await Promise.all(
+            response.data.map(async (form) => {
+              const labelsResponse = await labelApi.getFormLabels(form.id);
+              return apiFormToAssessmentForm(
+                form,
+                labelsResponse.success && labelsResponse.data ? labelsResponse.data : []
+              );
+            })
+          );
+
+          setTemplates(mappedTemplates.length > 0 ? mappedTemplates : fallbackTemplates);
+          setUsingFallback(mappedTemplates.length === 0);
+        } else {
+          setTemplates(fallbackTemplates);
+          setUsingFallback(true);
+        }
+      } catch (err) {
+        setTemplates(fallbackTemplates);
+        setUsingFallback(true);
+        console.error("Error fetching templates:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchForms();
+  }, []);
 
   // Set the selected template based on the URL query parameter
   useEffect(() => {
-    if (typeof template === "string") {
-      const foundTemplate = templates.find(t => t.id === template);
+    if (templateId && templates.length > 0) {
+      const foundTemplate = templates.find(t => t.id === templateId);
       setSelectedTemplate(foundTemplate || null);
     }
-  }, [template]);
+  }, [templateId, templates]);
 
-  // Handle template selection
   const handleTemplateSelect = (templateId: string) => {
     const template = templates.find(t => t.id === templateId);
     setSelectedTemplate(template || null);
-    // Update the URL with the selected template
     router.push(`/form/assessment?template=${templateId}`);
   };
 
-  // Convert to AssessmentForm format if template is found
   const assessmentForm: AssessmentForm | null = selectedTemplate
     ? {
       id: `q2025-performance-${selectedTemplate.id}`,
@@ -90,30 +106,32 @@ export default function Home() {
     <div className="max-w-3xl mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6">Performance Review</h1>
 
-      {!assessmentForm ? (
-        <TemplateSelector
-          templates={templates}
-          selectedId={selectedTemplate?.id || null}
-          onTemplateSelect={handleTemplateSelect} // Pass the handler to TemplateSelector
-        />
+      {isLoading ? (
+        <div>Loading templates...</div>
+      ) : !assessmentForm ? (
+        <>
+          {usingFallback}
+          <TemplateSelector
+            templates={templates}
+            selectedId={selectedTemplate?.id || null}
+            onTemplateSelect={handleTemplateSelect}
+          />
+        </>
       ) : (
         <PerformanceAssessmentFormWrapper
           assessment={assessmentForm}
           formAction={submitAnswers}
         />
       )}
-      <Button
-        onClick={() => router.push('/form/template')}
-      >
+
+      <Button onClick={() => router.push('/form/template')} className="mt-4">
         Create new template
       </Button>
-
     </div>
   );
 }
 
 // Client-side wrapper for the form
-// TODO: đoạn này nhờ chatgpt code nên hơi lỏ 
 function PerformanceAssessmentFormWrapper({
   assessment,
   formAction
@@ -124,30 +142,14 @@ function PerformanceAssessmentFormWrapper({
   return (
     <>
       <div className="mb-4">
-        <a
-          href="/form/assessment"
-          className="text-blue-500 hover:underline flex items-center gap-2"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
+        <a href="/form/assessment" className="text-blue-500 hover:underline flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
           Back to templates
         </a>
       </div>
-      <PerformanceAssessmentForm
-        assessment={assessment}
-        formAction={formAction}
-      />
+      <PerformanceAssessmentForm assessment={assessment} formAction={formAction} />
     </>
   );
 }
