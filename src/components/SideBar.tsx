@@ -9,6 +9,7 @@ import {
   Book,
   FileClock,
   Gauge,
+  ClipboardEdit,
 } from "lucide-react";
 import Link from "next/link";
 import { tokenService } from "@/services/auth";
@@ -52,6 +53,12 @@ export function SideBar() {
       icon: <Book />,
       path: "/form/performanceAssessment",
       isSelected: pathname?.startsWith("/form/performanceAssessment"),
+    },
+    {
+      tabName: "Create Template",
+      icon: <ClipboardEdit />,
+      path: "/form/template",
+      isSelected: pathname?.startsWith("/form/template"),
     },
     {
       tabName: "History",
