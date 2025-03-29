@@ -1,3 +1,4 @@
+import { tokenService } from "@/services/auth";
 import { NextResponse } from "next/server";
 
 const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
@@ -38,6 +39,8 @@ export async function POST(req: Request) {
     secure: true,
     path: "/",
   });
+
+  tokenService.setTokens(accessToken, refreshToken);
 
   return response;
 }
