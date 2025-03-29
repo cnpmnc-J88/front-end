@@ -19,7 +19,7 @@ export interface FormResponse {
 }
 
 // Label/Question Types
-export interface LabelCreateRequest {
+export type LabelCreateRequest = {
   label_name: string;
 }
 
