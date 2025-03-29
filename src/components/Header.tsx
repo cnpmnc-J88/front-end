@@ -1,17 +1,36 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { tokenService } from "@/services/auth";
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [userName, setUserName] = useState("User");
+  const [picture, setPicture] = useState("favicon.ico");
+
+  const handleLogout = async () => {
+    try {
+      // Call logout API endpoint
+      const response = await fetch("/api/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+
+      if (!response.ok) {
+        console.error("Error during logout:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Failed to call logout API:", error);
+    } finally {
+      tokenService.removeAllTokens();
+      router.push("/auth/login");
+    }
+  };
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -37,8 +56,19 @@ export function Header() {
         if (response.ok) {
           const data = await response.json();
           setUserName(data.name || "User");
+          setPicture(data.picture || "favicon.ico");
         } else {
-          console.error("Failed to fetch user info");
+          console.error("Failed to fetch user info, status:", response.status);
+
+          // Check if status indicates authentication issue
+          if (
+            response.status === 401 ||
+            response.status === 403 ||
+            response.status === 404
+          ) {
+            alert("Your session has expired. Please login again.");
+            handleLogout();
+          }
         }
       } catch (error) {
         console.error("Error fetching user info:", error);
@@ -48,7 +78,7 @@ export function Header() {
     if (!pathname?.startsWith("/auth")) {
       fetchUserInfo();
     }
-  }, [pathname]);
+  }, [pathname, router]);
 
   if (pathname?.startsWith("/auth")) {
     return <></>;
@@ -57,28 +87,12 @@ export function Header() {
   return (
     <header className="w-full h-14  flex flex-row items-center sticky">
       <div className="flex flex-1 justify-end px-9 gap-2">
-        <img src="favicon.ico" className="w-9" />
+        <img src={picture} className="w-9 rounded-full" />
 
-        <Popover>
-          <PopoverTrigger asChild>
-            <div className="flex flex-row items-center justify-center hover:cursor-pointer">
-              <span className="font-bold">{userName}</span>
-              <ChevronDown className="-mb-0.5" />
-            </div>
-          </PopoverTrigger>
-
-          {/* Nội dung popover */}
-          <PopoverContent className="w-48 p-2">
-            <div className="flex flex-col gap-2">
-              <button className="text-sm hover:bg-gray-100 p-2 rounded">
-                Profile
-              </button>
-              <button className="text-sm hover:bg-gray-100 p-2 rounded">
-                Settings
-              </button>
-            </div>
-          </PopoverContent>
-        </Popover>
+        <div className="flex flex-row items-center justify-center hover:cursor-pointer">
+          <span className="font-bold">{userName}</span>
+          {/* <ChevronDown className="-mb-0.5" /> */}
+        </div>
       </div>
     </header>
   );

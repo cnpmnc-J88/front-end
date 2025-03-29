@@ -11,6 +11,7 @@ import {
   Gauge,
 } from "lucide-react";
 import Link from "next/link";
+import { tokenService } from "@/services/auth";
 
 export function SideBar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -31,8 +32,10 @@ export function SideBar() {
 
       // Redirect to login page
       router.push("/auth/login");
+      tokenService.removeAllTokens();
     } catch (error) {
       console.error("Logout failed:", error);
+      tokenService.removeAllTokens();
       router.push("/auth/login");
     }
   };
