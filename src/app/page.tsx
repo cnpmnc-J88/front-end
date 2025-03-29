@@ -175,7 +175,7 @@ export default function Home() {
           <Button
             variant="outline"
             className="w-full"
-            onClick={() => router.push("/form/performanceAssessment")}
+            onClick={() => router.push("/form/assessment")}
           >
             Start Assessment
           </Button>

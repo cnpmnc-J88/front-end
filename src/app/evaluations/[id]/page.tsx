@@ -1,9 +1,7 @@
 "use client";
 
-import { useState, use } from "react";
 import { EvaluationItem } from "@/components/EvaluationCard";
 import { Button } from "@/components/ui/button";
-import { AssessmentForm } from "@/components/AssessmentForm";
 import { AssessmentForm } from "@/components/AssessmentForm";
 import Link from "next/link";
 import { notFound, useSearchParams } from "next/navigation";
@@ -30,6 +28,11 @@ export default function EvaluationDetailPage() {
   const searchParams = useSearchParams();
   const [evaluation, setEvaluation] = useState<any>({});
   const [history, setHistory] = useState<History[]>([]);
+  const [showAssessmentForm, setShowAssessmentForm] = useState(false);
+
+  const handleAssessmentSuccess = () => {
+    setShowAssessmentForm(false);
+  };
 
   useEffect(() => {
     const id = searchParams.get("id");

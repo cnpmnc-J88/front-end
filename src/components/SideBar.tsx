@@ -57,18 +57,13 @@ export function SideBar() {
       path: "/evaluations",
       isSelected: pathname === "/evaluations",
     },
-    {
-      tabName: "Send Email",
-      icon: <Mails />,
-      path: "/evaluations/send-bulk",
-      isSelected: pathname === "/evaluations/send-bulk",
-    },
   ];
 
   return (
     <div
-      className={`${isCollapsed ? "w-64" : "w-16"
-        } min-h-screen bg-black flex flex-col gap-2 py-6 z-10 relative transition-all duration-300`}
+      className={`${
+        isCollapsed ? "w-64" : "w-16"
+      } min-h-screen bg-black flex flex-col gap-2 py-6 z-10 relative transition-all duration-300`}
     >
       {/*  __________________LOGO__________________   */}
       <Link
@@ -99,8 +94,9 @@ export function SideBar() {
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
         <div
-          className={`transition-transform duration-500 ${isCollapsed ? "rotate-0" : "rotate-180"
-            }`}
+          className={`transition-transform duration-500 ${
+            isCollapsed ? "rotate-0" : "rotate-180"
+          }`}
         >
           <ChevronLeft size={18} />
         </div>
