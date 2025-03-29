@@ -9,6 +9,7 @@ import {
   Book,
   FileClock,
   Gauge,
+  Mails,
   ClipboardEdit,
 } from "lucide-react";
 import Link from "next/link";
@@ -51,20 +52,14 @@ export function SideBar() {
     {
       tabName: "Add form",
       icon: <Book />,
-      path: "/form/performanceAssessment",
-      isSelected: pathname?.startsWith("/form/performanceAssessment"),
-    },
-    {
-      tabName: "Create Template",
-      icon: <ClipboardEdit />,
-      path: "/form/template",
-      isSelected: pathname?.startsWith("/form/template"),
+      path: "/form/assessment",
+      isSelected: pathname?.startsWith("/form/assessment"),
     },
     {
       tabName: "History",
       icon: <FileClock />,
       path: "/evaluations",
-      isSelected: pathname?.startsWith("/evaluations"),
+      isSelected: pathname === "/evaluations",
     },
   ];
 

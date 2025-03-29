@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { setCookie } from "cookies-next";
 import { tokenService } from "@/services/auth";
 
 export default function ReceivePage() {

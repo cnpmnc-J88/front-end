@@ -1,56 +1,119 @@
 "use client";
 import EvaluationPage, { EvaluationItem } from "@/components/EvaluationCard";
 import { useEffect, useState } from "react";
-const mockEvaluations: EvaluationItem[] = [
-  {
-    id: 1,
-    employeeName: "Nguyễn Văn A",
-    position: "Nhân viên kinh doanh",
-    evaluationDate: "2024-03-20",
-    rating: 4.5,
-    criteria: ["Hiệu suất", "Teamwork", "Sáng tạo"],
-    status: "good",
-    comment: "Thể hiện xuất sắc trong quý này, cần duy trì phong độ",
-    image: "https://github.com/shadcn.png",
-  },
-  {
-    id: 2,
-    employeeName: "Trần Thị B",
-    position: "Kế toán trưởng",
-    evaluationDate: "2024-03-19",
-    rating: 3.2,
-    criteria: ["Độ chính xác", "Quản lý thời gian"],
-    status: "needs-improvement",
-    comment: "Cần cải thiện tốc độ xử lý chứng từ",
-    image:
-      "https://play-lh.googleusercontent.com/EiMYfsI4wBmE8IC5M_SD2Rm7jWIv3F3bp1oabo0ShgnQdJmZuzzbXJYELWCqXZi8lA=w240-h480-rw",
-  },
-];
 
-export default async function Evaluation() {
-  const [evaluations, setEvaluations] =
-    useState<EvaluationItem[]>(mockEvaluations);
+interface FormItem {
+  id: number;
+  email: string;
+  form: {
+    id: number;
+  };
+  createdAt: string;
+}
+
+interface FormItemList {
+  content: FormItem[];
+}
+
+interface AssessmentInterface {
+  labelNames: string[];
+}
+
+export default function Evaluation() {
+  const [evaluations, setEvaluations] = useState<EvaluationItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
-    const callApi = async () => {
-      const page = 0;
+    const fetchFormData = async (
+      accessToken: string
+    ): Promise<FormItemList> => {
       const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL + `/form?page=${page}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/history`,
         {
           method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch");
+        throw new Error(`Failed to fetch form: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      setEvaluations(data);
-      console.log(data);
+      return response.json();
+    };
+
+    const fetchAssessment = async (
+      accessToken: string,
+      formId: number
+    ): Promise<AssessmentInterface[]> => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/getassessment/${formId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch assessment for form ${formId}`);
+      }
+
+      return response.json();
+    };
+
+    const callApi = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const accessToken = localStorage.getItem("access_token");
+        if (!accessToken) {
+          throw new Error("Access token not found");
+        }
+
+        const forms = await fetchFormData(accessToken);
+
+        const evaluationsWithAssessments: EvaluationItem[] = await Promise.all(
+          forms.content.map(async (form) => {
+            const assessment = await fetchAssessment(accessToken, form.form.id);
+            const response = {
+              id: form.id,
+              employeeName: form.email,
+              evaluationDate: form.createdAt,
+              criteria: assessment[0].labelNames,
+            };
+
+            return response;
+          })
+        );
+
+        setEvaluations(evaluationsWithAssessments);
+      } catch (err) {
+        console.error("API call failed:", err);
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred"
+        );
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     callApi();
   }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div>
       <EvaluationPage items={evaluations} />
