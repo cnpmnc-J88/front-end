@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
+import { tokenService } from "@/services/auth";
 
 export default function ReceivePage() {
   const router = useRouter();
@@ -10,6 +11,8 @@ export default function ReceivePage() {
     const params = new URLSearchParams(window.location.search);
     const accessToken = params.get("access_token");
     const refreshToken = params.get("refresh_token");
+
+    tokenService.setTokens(accessToken || "", refreshToken || "");
 
     if (accessToken && refreshToken) {
       localStorage.setItem("access_token", accessToken);

@@ -13,7 +13,12 @@ import { apiRequest } from './apiUtils';
 export const formApi = {
   // Create a new form
   createForm: async (params: FormCreateRequest): Promise<ApiResponse<FormResponse>> => {
-    return apiRequest<FormResponse>('/form', 'POST', params);
+    const adhocParams = {
+      ...params,
+      // backend requirement, don't know why :pepe-hang:
+      former_position: 'hehe'
+    }
+    return apiRequest<FormResponse>('/form', 'POST', adhocParams);
   },
 
   // Get form by ID
