@@ -52,7 +52,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${url}/api/form?page=0`, {
+    fetch(`${url}/api/form`, {
       headers: headers,
     })
       .then((res) => res.json())
@@ -131,7 +131,9 @@ export default function Home() {
             {assessments.map((assess) => (
               <Card key={assess.assID} className="col-span-1">
                 <CardHeader>
-                  <CardTitle>{assess.assessor_email}</CardTitle>
+                  <CardTitle className="break-words overflow-hidden">
+                    {assess.assessor_email}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p>
