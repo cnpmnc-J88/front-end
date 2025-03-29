@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
 export async function GET() {
   return NextResponse.json(
     { message: "GET method not supported" },
@@ -12,16 +14,13 @@ export async function POST(req: Request) {
   const { accessToken, refreshToken } = body;
 
   try {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/register_email?access_token=${accessToken}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + accessToken,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    await fetch(`${url}/auth/register_email?access_token=${accessToken}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+        "Content-Type": "application/json",
+      },
+    });
   } catch (exception) {}
 
   if (!accessToken || !refreshToken) {
