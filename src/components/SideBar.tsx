@@ -55,7 +55,7 @@ export function SideBar() {
       tabName: "History",
       icon: <FileClock />,
       path: "/evaluations",
-      isSelected: pathname?.startsWith("/evaluations"),
+      isSelected: pathname === "/evaluations",
     },
     {
       tabName: "Send Email",

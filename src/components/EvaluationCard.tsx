@@ -16,11 +16,11 @@ import Link from "next/link";
 export interface EvaluationItem {
   id: number;
   employeeName: string;
-  position: string;
+  // position: string;
   evaluationDate: string;
-  rating: number;
+  // rating: number;
   criteria: string[];
-  status: "completed" | "needs-improvement" | "good";
+  status: string;
   comment: string;
   image?: string;
 }
@@ -68,7 +68,7 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
               )}
               <div>
                 <CardTitle>{item.employeeName}</CardTitle>
-                <CardDescription>{item.position}</CardDescription>
+                {/* <CardDescription>{item.position}</CardDescription> */}
               </div>
             </div>
 
