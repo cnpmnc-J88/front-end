@@ -16,7 +16,7 @@ export default function CreateAssessmentPage() {
       </div>
 
       {/* Example of pre-defined criteria templates */}
-      <div className="mb-8 max-w-2xl mx-auto">
+      {/* <div className="mb-8 max-w-2xl mx-auto">
         <h2 className="text-xl font-semibold mb-4">Template Examples</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TemplateCard 
@@ -40,7 +40,7 @@ export default function CreateAssessmentPage() {
             ]}
           />
         </div>
-      </div>
+      </div> */}
 
       {/* The actual form */}
       <PerformanceCriteriaForm />
