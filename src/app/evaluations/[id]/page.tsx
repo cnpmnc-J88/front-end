@@ -1,11 +1,15 @@
+"use client";
+
+import { useState, use } from "react";
 import { EvaluationItem } from "@/components/EvaluationCard";
 import { Button } from "@/components/ui/button";
+import { AssessmentForm } from "@/components/AssessmentForm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 interface Params {
-  id: string;
+  readonly id: string;
 }
 
 const getEvaluationDetail = (id: string): EvaluationItem | undefined => {
@@ -38,17 +42,24 @@ const getEvaluationDetail = (id: string): EvaluationItem | undefined => {
   return mockEvaluations.find((item) => item.id === Number(id));
 };
 
-export default async function EvaluationDetailPage({
+export default function EvaluationDetailPage({
   params,
 }: {
-  params: Promise<Params>;
+  readonly params: Params;
 }) {
-  const { id } = await params;
-  const evaluation = await getEvaluationDetail(id);
+  const [showAssessmentForm, setShowAssessmentForm] = useState(false);
+  const { id } = use<Params>(params);
+  const evaluation = getEvaluationDetail(id);
 
   if (!evaluation) {
     return notFound();
   }
+
+  const handleAssessmentSuccess = () => {
+    setShowAssessmentForm(false);
+    // In a real application, you might want to refresh the evaluation data
+    // to show the updated assessment information
+  };
 
   return (
     <main className="container mx-auto py-8 px-4">
@@ -132,6 +143,23 @@ export default async function EvaluationDetailPage({
                 </div>
               </div>
             </div>
+
+            {/* Assessment Form Section */}
+            {showAssessmentForm ? (
+              <div className="mt-8 border-t pt-4">
+                <AssessmentForm
+                  employeeId={evaluation.id}
+                  onCancel={() => setShowAssessmentForm(false)}
+                  onSuccess={handleAssessmentSuccess}
+                />
+              </div>
+            ) : (
+              <div className="mt-6 flex justify-end">
+                <Button onClick={() => setShowAssessmentForm(true)}>
+                  Đánh giá nhân viên
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
