@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import { SideBarButton } from "./SideBarButton";
 import { SideBarTab } from "./SideBarTab";
-import { ArrowLeftToLine, Book, FileClock } from "lucide-react";
+import { ArrowLeftToLine, Book, FileClock, Mails } from "lucide-react";
 
 export function SideBar() {
   const pathname = usePathname();
@@ -10,8 +10,8 @@ export function SideBar() {
     {
       tabName: "Add form",
       icon: <Book />,
-      path: "/add-form",
-      isSelected: pathname === "/add-form",
+      path: "/form/performanceAssessment",
+      isSelected: pathname === "/form/performanceAssessment",
     },
     {
       tabName: "History",
@@ -38,7 +38,11 @@ export function SideBar() {
         ))}
       </div>
       <div className="flex-1 flex items-end justify-center">
-        <SideBarButton text="Log out" icon={<ArrowLeftToLine />} />
+        <SideBarButton
+          text="Log out"
+          icon={<ArrowLeftToLine />}
+          onClick={undefined}
+        />
       </div>
     </div>
   );
