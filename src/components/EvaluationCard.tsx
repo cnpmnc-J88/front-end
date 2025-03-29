@@ -83,9 +83,9 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
             Xem chi tiết
           </Link>
         </Button>
-        <Button asChild size="sm">
+        {/* <Button asChild size="sm">
           <Link href={`/evaluations/${item.id}/send`}>Gửi đánh giá</Link>
-        </Button>
+        </Button> */}
       </CardFooter>
     </Card>
   );
