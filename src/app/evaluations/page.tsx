@@ -1,6 +1,7 @@
 "use client";
 import EvaluationPage, { EvaluationItem } from "@/components/EvaluationCard";
 import { useEffect, useState } from "react";
+
 const mockEvaluations: EvaluationItem[] = [
   {
     id: 1,
@@ -32,21 +33,83 @@ export default function Evaluation() {
     useState<EvaluationItem[]>(mockEvaluations);
   useEffect(() => {
     const callApi = async () => {
-      const page = 0;
-      const response = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_URL + `/form?page=${page}`,
-        {
-          method: "GET",
+      try {
+        const accessToken = localStorage.getItem("access_token");
+
+        if (!accessToken) {
+          throw new Error("Không tìm thấy access token trong cookie");
         }
-      );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch");
+        const page = 0;
+
+        const responseUser = await fetch(
+          "https://www.googleapis.com/oauth2/v3/userinfo",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (!responseUser.ok) {
+          throw new Error("Failed to get user");
+        }
+
+        const userInfo = await responseUser.json();
+
+        const responseForm = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/form?page=${page}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (!responseForm.ok) {
+          throw new Error("Failed to fetch form");
+        }
+
+        const data = await responseForm.json();
+
+        const response_assessment = await Promise.all(
+          data.map(async (item: any) => {
+            const response = await fetch(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/getassessment/${item.id}`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(`Failed to fetch assessment for form ${item.id}`);
+            }
+
+            return response.json();
+          })
+        );
+
+        const flattenedArray = response_assessment.flat();
+        const evaluationList = flattenedArray.map((item) => ({
+          id: item.assId,
+          employeeName: userInfo.name,
+          position: item.former_position,
+          evaluationDate: item.evaluationDate,
+          rating: item.rating,
+          criteria: item.labelNames,
+          status: item.status,
+          comment: item.comment,
+          image: userInfo.picture,
+        }));
+
+        setEvaluations(evaluationList);
+      } catch (error) {
+        console.error("API call failed:", error);
       }
-
-      const data = await response.json();
-      setEvaluations(data);
-      console.log(data);
     };
 
     callApi();

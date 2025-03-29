@@ -132,14 +132,14 @@ export function EvaluationCard({ item }: { item: EvaluationItem }) {
 }
 
 interface EvaluationPageProps {
-  items: EvaluationItem[];
+  items: any;
 }
 
 export default function EvaluationPage({ items }: EvaluationPageProps) {
   return (
     <main className="container mx-auto py-8 px-4">
       <div className="space-y-6 max-w-4xl mx-auto">
-        {items.map((item) => (
+        {items.map((item: any) => (
           <EvaluationCard key={item.id} item={item} />
         ))}
       </div>

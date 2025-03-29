@@ -44,7 +44,11 @@ export function SideBar() {
         ))}
       </div>
       <div className="flex-1 flex items-end justify-center">
-        <SideBarButton text="Log out" icon={<ArrowLeftToLine />} />
+        <SideBarButton
+          text="Log out"
+          icon={<ArrowLeftToLine />}
+          onClick={undefined}
+        />
       </div>
     </div>
   );
