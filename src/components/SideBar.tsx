@@ -9,8 +9,10 @@ import {
   Book,
   FileClock,
   Gauge,
+  ClipboardEdit,
 } from "lucide-react";
 import Link from "next/link";
+import { tokenService } from "@/services/auth";
 
 export function SideBar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -31,8 +33,10 @@ export function SideBar() {
 
       // Redirect to login page
       router.push("/auth/login");
+      tokenService.removeAllTokens();
     } catch (error) {
       console.error("Logout failed:", error);
+      tokenService.removeAllTokens();
       router.push("/auth/login");
     }
   };
@@ -49,6 +53,12 @@ export function SideBar() {
       icon: <Book />,
       path: "/form/performanceAssessment",
       isSelected: pathname?.startsWith("/form/performanceAssessment"),
+    },
+    {
+      tabName: "Create Template",
+      icon: <ClipboardEdit />,
+      path: "/form/template",
+      isSelected: pathname?.startsWith("/form/template"),
     },
     {
       tabName: "History",
