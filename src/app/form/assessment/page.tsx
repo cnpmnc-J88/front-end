@@ -1,57 +1,60 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { submitAnswers } from "@/assessment/actions";
+import { submitAnswers } from "@/actions/assessment/actions";
 import TemplateSelector from "@/components/form/TemplateSelector";
 import PerformanceAssessmentForm from "@/components/form/PerformanceAssessmentForm";
+import { Button } from "@/components/ui/button"; // Import the custom Button component
 
 
 // Define serializable template type
 interface TemplateItem {
   id: string;
-  name: string;
-  criterias: string[];
+  formName: string;
+  criterias: Array<{
+    id: string;
+    label_name: string;
+  }>;
 }
 
 // Example Templates
 const templates: TemplateItem[] = [
   {
     id: "standard",
-    name: "Standard Assessment",
+    formName: "Standard Assessment",
     criterias: [
-      "Technical Skills & Knowledge",
-      "Quality of Work",
-      "Communication & Collaboration",
-      "Problem Solving & Innovation",
-      "Leadership & Initiative"
+      { id: "technical_skills", label_name: "Technical Skills & Knowledge" },
+      { id: "quality_work", label_name: "Quality of Work" },
+      { id: "communication", label_name: "Communication & Collaboration" },
+      { id: "problem_solving", label_name: "Problem Solving & Innovation" },
+      { id: "leadership", label_name: "Leadership & Initiative" }
     ]
   },
   {
     id: "management",
-    name: "Management Assessment",
+    formName: "Management Assessment",
     criterias: [
-      "Team Leadership",
-      "Strategic Planning",
-      "Resource Management",
-      "Performance Management",
-      "Decision Making",
-      "Communication & Influence"
+      { id: "team_leadership", label_name: "Team Leadership" },
+      { id: "strategic_planning", label_name: "Strategic Planning" },
+      { id: "resource_management", label_name: "Resource Management" },
+      { id: "performance_management", label_name: "Performance Management" },
+      { id: "decision_making", label_name: "Decision Making" },
+      { id: "communication_influence", label_name: "Communication & Influence" }
     ]
   },
   {
     id: "technical",
-    name: "Technical Assessment",
+    formName: "Technical Assessment",
     criterias: [
-      "Technical Expertise",
-      "Code Quality",
-      "Problem Solving",
-      "Technical Documentation",
-      "Innovation & Learning",
-      "Technical Collaboration"
+      { id: "technical_expertise", label_name: "Technical Expertise" },
+      { id: "code_quality", label_name: "Code Quality" },
+      { id: "problem_solving", label_name: "Problem Solving" },
+      { id: "technical_documentation", label_name: "Technical Documentation" },
+      { id: "innovation_learning", label_name: "Innovation & Learning" },
+      { id: "technical_collaboration", label_name: "Technical Collaboration" }
     ]
   }
 ];
-
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -78,6 +81,7 @@ export default function Home() {
   const assessmentForm: AssessmentForm | null = selectedTemplate
     ? {
       id: `q2025-performance-${selectedTemplate.id}`,
+      formName: `q2025-performance-${selectedTemplate.formName}`,
       criterias: selectedTemplate.criterias
     }
     : null;
@@ -98,6 +102,12 @@ export default function Home() {
           formAction={submitAnswers}
         />
       )}
+      <Button
+        onClick={() => router.push('/form/template')}
+      >
+        Create new template
+      </Button>
+
     </div>
   );
 }

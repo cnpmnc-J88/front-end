@@ -41,7 +41,11 @@ export async function apiRequest<T>(
     if (body) {
       options.body = JSON.stringify(body);
     }
-
+    // Debug request details
+    console.log(`[API Request] ${method} ${url.toString()}`, {
+      headers: options.headers,
+      body: body ? body : 'No body'
+    });
     // Make the request
     const response = await fetch(url.toString(), options);
     const data = await response.json();

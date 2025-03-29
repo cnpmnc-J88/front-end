@@ -9,11 +9,14 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-// Define serializable template types
+// Define serializable template type
 interface TemplateItem {
   id: string;
-  name: string;
-  criterias: string[];
+  formName: string;
+  criterias: Array<{
+    id: string;
+    label_name: string;
+  }>;
 }
 
 interface TemplateSelectorProps {
@@ -43,7 +46,7 @@ export default function TemplateSelector({
             onClick={() => onTemplateSelect(template.id)} // Call the selection handler
           >
             <CardHeader>
-              <CardTitle>{template.name}</CardTitle>
+              <CardTitle>{template.formName}</CardTitle>
               <CardDescription>
                 {template.criterias.length} criteria
               </CardDescription>
@@ -51,7 +54,7 @@ export default function TemplateSelector({
             <CardContent>
               <ul className="list-disc pl-5 space-y-1 text-sm">
                 {template.criterias.slice(0, 3).map((criteria) => (
-                  <li key={criteria}>{criteria}</li>
+                  <li key={criteria.label_name}>{criteria.label_name}</li>
                 ))}
                 {template.criterias.length > 3 && (
                   <li className="text-muted-foreground">

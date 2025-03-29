@@ -11,5 +11,9 @@ interface Assessment {
 }
 interface AssessmentForm {
   id: string,
-  criterias: string[],
+  formName: string,
+  criterias: Array<{
+    id: string;
+    label_name: string;
+  }>;
 }
