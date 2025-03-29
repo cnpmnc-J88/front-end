@@ -4,11 +4,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { tokenService } from "@/services/auth";
 
+const userProfilePic = "https://www.gravatar.com/avatar/?d=mp";
+
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const [userName, setUserName] = useState("User");
-  const [picture, setPicture] = useState("favicon.ico");
+  const [picture, setPicture] = useState(userProfilePic);
 
   const handleLogout = async () => {
     try {
@@ -56,7 +58,7 @@ export function Header() {
         if (response.ok) {
           const data = await response.json();
           setUserName(data.name || "User");
-          setPicture(data.picture || "favicon.ico");
+          setPicture(data.picture || userProfilePic);
         } else {
           console.error("Failed to fetch user info, status:", response.status);
 
